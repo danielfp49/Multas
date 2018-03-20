@@ -9,7 +9,7 @@ namespace Multas1.Models
     public class MultasDb : DbContext // classe especial que representa a base de dados
 
     {
-
+       
         public MultasDb() : base("name=MultasDBConnectionString")  {
             
             }          
