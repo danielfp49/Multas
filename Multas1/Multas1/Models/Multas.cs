@@ -12,7 +12,7 @@ namespace Multas1.Models
         [Key]
         public int ID{ get; set; }
 
-        public string Infração { get; set; }
+        public string Infracao { get; set; }
 
         public string LocalDaMulta { get; set; }
 

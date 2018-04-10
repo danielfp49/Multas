@@ -4,15 +4,15 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Lista de Agentes</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Criar Novo Agente", "Create")
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Nome)
+            @Html.DisplayNameFor(model => model.Nome) @*model => model.Nome ------> expressao Labda*@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Esquadra)
@@ -32,12 +32,14 @@
             @Html.DisplayFor(modelItem => item.Esquadra)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Fotografia)
+            @*Html.DisplayFor(modelItem => item.Fotografia)*@
+            <a href="~/imagens/@item.Fotografia" width="200" height="150"/>
+            <img src="~/imagens/@item.Fotografia" width="50" height="37"/>
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+            @Html.ActionLink("Editar", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Detalhes", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Apagar", "Delete", new { id=item.ID })
         </td>
     </tr>
 }
