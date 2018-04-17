@@ -24,9 +24,9 @@ namespace Multas1.Controllers
         {
             //obter a lista de todos os agentes
             // em SQL: select * From Agentes ORDER BY Nome;
-          var listaDeAgentes= db.Agentes.ToList().OrderBy(a=> a.Nome);
+            var listaDeAgentes = db.Agentes.ToList().OrderBy(a => a.Nome);
 
-          return View(listaDeAgentes);
+            return View(listaDeAgentes);
 
         }
 
@@ -148,11 +148,11 @@ namespace Multas1.Controllers
                 }
 
             }
-               
+
             return View(agente);
-                }
-            
-           
+        }
+
+
 
         // GET: Agentes/Edit/5
         public ActionResult Edit(int? id)
@@ -212,12 +212,12 @@ namespace Multas1.Controllers
             }
             //pesquisar pelo agentente, cujo ID foi fornecido
             Agentes agente = db.Agentes.Find(id);
-          
+
             //verificar se o agente foi encontrado
             if (agente == null)
             {
-               //o agente nao existe
-               // redirecionar para a pagina tual
+                //o agente nao existe
+                // redirecionar para a pagina tual
                 return RedirectToAction("Index");
 
 
@@ -228,14 +228,23 @@ namespace Multas1.Controllers
         // POST: Agentes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Agentes agentes = db.Agentes.Find(id);
-            db.Agentes.Remove(agentes);
+        public ActionResult DeleteConfirmed(int id) {
+            try{
+       
+            Agentes agente = db.Agentes.Find(id);
+            db.Agentes.Remove(agente);
             db.SaveChanges();
             return RedirectToAction("Index");
-        }
-
+    }
+    catch (Exception ex){
+                ModelState.AddModelError.Format("",string.Format("Não é possivel apagar agente nº {0} -{1}, porque há multas associadas a ele",id,agente.Nome)
+           );
+               
+    }
+            //se cheguei aqui é porque houve um problema
+            //devolvo os dados do agente à view
+            return View(agente);
+}
         protected override void Dispose(bool disposing)
         {
             if (disposing)
