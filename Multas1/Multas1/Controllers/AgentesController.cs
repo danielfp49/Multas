@@ -16,27 +16,53 @@ namespace Multas1.Controllers
         private MultasDb db = new MultasDb();
 
         // GET: Agentes
+        /// <summary>
+        /// lista todos os agentes
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
-            return View(db.Agentes.ToList());
+            //obter a lista de todos os agentes
+            // em SQL: select * From Agentes ORDER BY Nome;
+          var listaDeAgentes= db.Agentes.ToList().OrderBy(a=> a.Nome);
+
+          return View(listaDeAgentes);
+
         }
 
         // GET: Agentes/Details/5
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest); instrução original predefenida por defeito, pois o sistema nao sabe o detalhe do agente quer ver 
+
+                //redirecionar para uma pagina que nos controlamos
+                return RedirectToAction("Index");
             }
-            Agentes agentes = db.Agentes.Find(id);
-            if (agentes == null)
+            Agentes agente = db.Agentes.Find(id);
+            if (agente == null)
             {
-                return HttpNotFound();
+                //o agente nao foi encontrado logo, gera-se uma msg de erro
+                //return HttpNotFound();
+                //redirecionar para uma pagina que nos controlamos
+                return RedirectToAction("Index");
+
+
             }
-            return View(agentes);
+            return View(agente);
         }
 
         // GET: Agentes/Create
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Create()
         {
             return View();
@@ -45,6 +71,8 @@ namespace Multas1.Controllers
         // POST: Agentes/Create
         // Para se proteger de mais ataques, ative as propriedades específicas a que você quer se conectar. Para 
         // obter mais detalhes, consulte https://go.microsoft.com/fwlink/?LinkId=317598.
+
+  
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Nome,Esquadra")] Agentes agente,HttpPostedFileBase uploadFotografia )
@@ -101,19 +129,32 @@ namespace Multas1.Controllers
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest); instrução original predefenida por defeito, pois o sistema nao sabe o detalhe do agente quer ver 
+
+                //redirecionar para uma pagina que nos controlamos
+                return RedirectToAction("Index");
             }
-            Agentes agentes = db.Agentes.Find(id);
-            if (agentes == null)
+            Agentes agente = db.Agentes.Find(id);
+            if (agente == null)
             {
-                return HttpNotFound();
+                //o agente nao foi encontrado logo, gera-se uma msg de erro
+                //return HttpNotFound();
+                //redirecionar para uma pagina que nos controlamos
+                return RedirectToAction("Index");
+
+
             }
-            return View(agentes);
+            return View(agente);
         }
 
         // POST: Agentes/Edit/5
         // Para se proteger de mais ataques, ative as propriedades específicas a que você quer se conectar. Para 
         // obter mais detalhes, consulte https://go.microsoft.com/fwlink/?LinkId=317598.
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="agentes"></param>
+        /// <returns></returns>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Nome,Esquadra,Fotografia")] Agentes agentes)
@@ -128,18 +169,30 @@ namespace Multas1.Controllers
         }
 
         // GET: Agentes/Delete/5
+        /// <summary>
+        /// apresenta na view os dados de um agente, com vista à sua, eventual, eliminação
+        /// </summary>
+        /// <param name="id">identificador do agente</param>
+        /// <returns></returns>
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return RedirectToAction("Index");
             }
-            Agentes agentes = db.Agentes.Find(id);
-            if (agentes == null)
+            //pesquisar pelo agentente, cujo ID foi fornecido
+            Agentes agente = db.Agentes.Find(id);
+          
+            //verificar se o agente foi encontrado
+            if (agente == null)
             {
-                return HttpNotFound();
+               //o agente nao existe
+               // redirecionar para a pagina tual
+                return RedirectToAction("Index");
+
+
             }
-            return View(agentes);
+            return View(agente);
         }
 
         // POST: Agentes/Delete/5
