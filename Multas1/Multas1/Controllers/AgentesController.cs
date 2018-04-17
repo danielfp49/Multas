@@ -72,31 +72,46 @@ namespace Multas1.Controllers
         // Para se proteger de mais ataques, ative as propriedades específicas a que você quer se conectar. Para 
         // obter mais detalhes, consulte https://go.microsoft.com/fwlink/?LinkId=317598.
 
-  
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Nome,Esquadra")] Agentes agente,HttpPostedFileBase uploadFotografia )
+        public ActionResult Create([Bind(Include = "Nome,Esquadra")] Agentes agente, HttpPostedFileBase uploadFotografia)
         {
             //escrever os dados de um novo agente na BD
 
             //especificar o ID do novo Agente
-            int idNovoAgente = db.Agentes.Max (a=>a.ID)+1;
+            //testar se há registos na tabela dos agentes
+            //  if (db.Agentes.Count() != 0) {     } 
+
+
+            // ou entao, usar a instrução TRY/CATCH
+            int idNovoAgente = 0;
+            try {
+                idNovoAgente = db.Agentes.Max(a => a.ID) + 1;
+
+
+            }
+            catch (Exception)
+            {
+                idNovoAgente = 1;
+            }
+
             //guardar o ID do novo Agente
             agente.ID = idNovoAgente;
             //especificar (escolher) o nome do ficheiro
-            string nomeImagem = "Agente_"+idNovoAgente+".jpg";
+            string nomeImagem = "Agente_" + idNovoAgente + ".jpg";
             //var. auxiliar
             string Path = "";
             //escrever o ficheiro com a fotografia no disco rigido, na pasta 'imagens'
-            if(uploadFotografia != null){
+            if (uploadFotografia != null) {
                 //o ficheiro foi fornecido 
                 //validar se o que foi fornecido é uma imagem --->TPC
                 //formatar o tamanho das imagens
 
-            
+
                 //criar o caminho completo ate ao sitio onde o ficheiro será guardado
                 Path = System.IO.Path.Combine(Server.MapPath("~/imagens/"), nomeImagem);
-                
+
                 //gurdar o nome do ficheiro escolhido na BD
                 agente.Fotografia = nomeImagem;
 
@@ -113,16 +128,31 @@ namespace Multas1.Controllers
             //gurdar o nome escolhido na BD
 
 
-            if (ModelState.IsValid)    
-            {
-                db.Agentes.Add(agente);
-                db.SaveChanges();
-                uploadFotografia.SaveAs(Path);
-                return RedirectToAction("Index");
-            }
 
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    //adiciona o novo agente à BD
+                    db.Agentes.Add(agente);
+                    // faz 'commit' às alteraçoes
+                    db.SaveChanges();
+                    //escrever o ficheiro com a fotografia no disco rigido
+                    uploadFotografia.SaveAs(Path);
+                    return RedirectToAction("Index");
+                }
+
+                catch (Exception)
+                {
+                    ModelState.AddModelError("", "Houve um erro com a criação do novo agente");
+                }
+
+            }
+               
             return View(agente);
-        }
+                }
+            
+           
 
         // GET: Agentes/Edit/5
         public ActionResult Edit(int? id)
