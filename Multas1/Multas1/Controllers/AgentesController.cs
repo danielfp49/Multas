@@ -135,10 +135,14 @@ namespace Multas1.Controllers
                 {
                     //adiciona o novo agente à BD
                     db.Agentes.Add(agente);
+                    
                     // faz 'commit' às alteraçoes
                     db.SaveChanges();
+                   
                     //escrever o ficheiro com a fotografia no disco rigido
                     uploadFotografia.SaveAs(Path);
+                    
+                    // se tudo correr be,, redireciona para a página do Index
                     return RedirectToAction("Index");
                 }
 
@@ -229,18 +233,34 @@ namespace Multas1.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id) {
-            try{
-       
-            Agentes agente = db.Agentes.Find(id);
-            db.Agentes.Remove(agente);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-    }
-    catch (Exception ex){
-                ModelState.AddModelError.Format("",string.Format("Não é possivel apagar agente nº {0} -{1}, porque há multas associadas a ele",id,agente.Nome)
-           );
-               
-    }
+            try {
+
+                Agentes agente = db.Agentes.Find(id);
+                db.Agentes.Remove(agente);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex) {
+                ModelState.AddModelError.Format("", string.Format("Não é possivel apagar agente nº {0} -{1}, porque há multas associadas a ele", id, agente.Nome)
+             ///se existir uma classe chamada 'Erro.cs'
+             ///iremos nela registas os dados do erro
+             /// - criar um objeto desta classe
+             /// - atribuir a esse objeto od dados de erro
+             ///     - nome do controller
+             ///     - nome do método
+             ///     - data + hora do erro
+             ///     - mensagem do erro (ex)
+             ///     - dados que se tentavam inserir
+             ///     - outros dados considerados relevante
+             /// - guardar o objeto na BD
+             /// - notificar um gestor do sistema, por email, ou por outro meio, da ocorrencia do erro e dos seus dados
+
+
+
+             );
+
+            }
+        
             //se cheguei aqui é porque houve um problema
             //devolvo os dados do agente à view
             return View(agente);
